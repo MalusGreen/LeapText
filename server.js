@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var http = require('http');
 //Middleware
 app.listen(3000);
 
@@ -16,6 +17,7 @@ var vision = Vision();
 app.get('/', function(req, res){
 res.send('Hello World');
 });
+
 
 var login = require('facebook-chat-api');
 var myThreadID = 100004714058918;
@@ -35,3 +37,4 @@ login({
 		res.send('success');
 	});
 });
+
