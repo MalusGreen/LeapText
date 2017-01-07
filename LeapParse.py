@@ -9,15 +9,31 @@ import Image, color, numpy
 
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
+#Private helper function, true if swiping
+def __swipehelper__(frame):
+	if len(frame.gestures()) > 3:
+		for gesture in frame.gestures():
+			if gesture.type is Leap.Gesture.TYPE_SWIPE:
+				swipe = Leap.SwipeGesture(gesture)
+				direction = swipe.direction
+				isHorizontal = abs(direction[0]) > abs(direction[1])
+				#Regarding Swipe event, fix only a certain flatness of horizontal
+				#swipes to be the correct swipe.
+				if(isHorizontal):
+					return True
+				
+	return False
+
 class SampleListener(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-
+    action = False
+    
     def on_init(self, controller):
         print "Initialized"
 
     def on_connect(self, controller):
-        print "Connected"
+	    controller.enable_gesture(Leap.Gesture.TYPE_SWIPE)
 
     def on_disconnect(self, controller):
         # Note: not dispatched when running in a debugger.
@@ -29,55 +45,24 @@ class SampleListener(Leap.Listener):
     def on_frame(self, controller):
         # Get the most recent frame and report some basic information
         frame = controller.frame()
-
-        print "Frame id: %d, timestamp: %d, hands: %d, fingers: %d" % (
-              frame.id, frame.timestamp, len(frame.hands), len(frame.fingers))
-
-        # Get hands
-        for hand in frame.hands:
-
-            handType = "Left hand" if hand.is_left else "Right hand"
-
-            print "  %s, id %d, position: %s" % (
-                handType, hand.id, hand.palm_position)
-
-            # Get the hand's normal vector and direction
-            normal = hand.palm_normal
-            direction = hand.direction
-
-            # Calculate the hand's pitch, roll, and yaw angles
-            print "  pitch: %f degrees, roll: %f degrees, yaw: %f degrees" % (
-                direction.pitch * Leap.RAD_TO_DEG,
-                normal.roll * Leap.RAD_TO_DEG,
-                direction.yaw * Leap.RAD_TO_DEG)
-
-            # Get arm bone
-            arm = hand.arm
-            print "  Arm direction: %s, wrist position: %s, elbow position: %s" % (
-                arm.direction,
-                arm.wrist_position,
-                arm.elbow_position)
-
-            # Get fingers
-            for finger in hand.fingers:
-
-                print "    %s finger, id: %d, length: %fmm, width: %fmm" % (
-                    self.finger_names[finger.type],
-                    finger.id,
-                    finger.length,
-                    finger.width)
-
-                # Get bones
-                for b in range(0, 4):
-                    bone = finger.bone(b)
-                    print "      Bone: %s, start: %s, end: %s, direction: %s" % (
-                        self.bone_names[bone.type],
-                        bone.prev_joint,
-                        bone.next_joint,
-                        bone.direction)
-
-        if not frame.hands.is_empty:
-            print ""
+		
+		for hand in frame.hands:
+			# Get fingers
+            if not hand.is_left:
+				for finger in hand.fingers:
+					if finger.type == 1:
+						pos = finger.stabilized_tip_position
+			if hand.is_left:
+		
+				actionPast = self.action
+				self.action = __swipehelper__(frame)
+				if not self.action:
+					if(actionPast):
+						#Swiped event call here.
+						print "Swiped"
+		
+		
+		
 
 def main():
     # Create a sample listener and controller
