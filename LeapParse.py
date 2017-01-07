@@ -5,17 +5,52 @@ sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 sys.path.append('C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib')
 import Leap
 
+
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
-class SampleListener(Leap.Listener):
+def is_horizontal(swipe):
+	"""
+	Returns true if the swipe is horizontal.
+	"""
+    swipe = Leap.SwipeGesture(swipe)
+    direction = swipe.direction
+    return abs(direction[0]) > abs(direction[1])
+
+def swipe_helper(gestures):
+    """
+    A helper function.
+    
+    Determines whether or not the gesture was a horizontal swipe.
+    """
+    if len(gestures) > 3:
+        for gesture in gestures:
+            if gesture.type is Leap.Gesture.TYPE_SWIPE:
+                isHorizontal = is_horizontal(gesture)
+                #Regarding Swipe event, fix only a certain flatness of horizontal
+                #swipes to be the correct swipe.
+                if(isHorizontal):
+                    return True
+    
+    return False
+
+class LeapListener(Leap.Listener):
+    """
+    Basic listener for Leap Motion interface.
+    
+    Implemented motions are swipes for the left hand and drawing 
+    for the right index finger.
+    """
+
+    #Global Constants.
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-
+    action = False
+    
     def on_init(self, controller):
         print "Initialized"
 
     def on_connect(self, controller):
-        print "Connected"
+	    controller.enable_gesture(Leap.Gesture.TYPE_SWIPE)
 
     def on_disconnect(self, controller):
         # Note: not dispatched when running in a debugger.
@@ -27,59 +62,33 @@ class SampleListener(Leap.Listener):
     def on_frame(self, controller):
         # Get the most recent frame and report some basic information
         frame = controller.frame()
-
-        print "Frame id: %d, timestamp: %d, hands: %d, fingers: %d" % (
-              frame.id, frame.timestamp, len(frame.hands), len(frame.fingers))
-
-        # Get hands
+        
         for hand in frame.hands:
-
-            handType = "Left hand" if hand.is_left else "Right hand"
-
-            print "  %s, id %d, position: %s" % (
-                handType, hand.id, hand.palm_position)
-
-            # Get the hand's normal vector and direction
-            normal = hand.palm_normal
-            direction = hand.direction
-
-            # Calculate the hand's pitch, roll, and yaw angles
-            print "  pitch: %f degrees, roll: %f degrees, yaw: %f degrees" % (
-                direction.pitch * Leap.RAD_TO_DEG,
-                normal.roll * Leap.RAD_TO_DEG,
-                direction.yaw * Leap.RAD_TO_DEG)
-
-            # Get arm bone
-            arm = hand.arm
-            print "  Arm direction: %s, wrist position: %s, elbow position: %s" % (
-                arm.direction,
-                arm.wrist_position,
-                arm.elbow_position)
-
-            # Get fingers
-            for finger in hand.fingers:
-
-                print "    %s finger, id: %d, length: %fmm, width: %fmm" % (
-                    self.finger_names[finger.type],
-                    finger.id,
-                    finger.length,
-                    finger.width)
-
-                # Get bones
-                for b in range(0, 4):
-                    bone = finger.bone(b)
-                    print "      Bone: %s, start: %s, end: %s, direction: %s" % (
-                        self.bone_names[bone.type],
-                        bone.prev_joint,
-                        bone.next_joint,
-                        bone.direction)
-
-        if not frame.hands.is_empty:
-            print ""
+            #Draw commands for the right hand.
+            if not hand.is_left:
+                print "RIGHT"
+                for finger in hand.fingers:
+                    if finger.type == 1:
+					
+						#Position is here.
+						#Used for DRAWING.
+                        pos = finger.stabilized_tip_position
+            
+			#Swipe commands for the left hand.
+            if hand.is_left:
+                print "LEFT"
+                actionPast = self.action
+                self.action = swipe_helper(frame.gestures())
+                if not self.action:
+                    if(actionPast):
+                        print "Swiped"
+		
+		
+		
 
 def main():
     # Create a sample listener and controller
-    listener = SampleListener()
+    listener = LeapListener()
     controller = Leap.Controller()
 
     # Have the sample listener receive events from the controller
