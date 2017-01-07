@@ -6,7 +6,7 @@ class Drawer():
 	Used for executing any draw functionality
 	"""
 
-	def recurse(
+	def draw(
 			x, 
 			y, 
 			radius,
@@ -14,17 +14,17 @@ class Drawer():
 			g, 
 			b):
 
-			"""
-			Used to draw the circle around the current position (emulates brush strokes)
-			Draws the circle through the use of recursion
+		"""
+		Used to draw the circle around the current position (emulates brush strokes)
+		Draws the circle through the use of recursion
 
-			:param x: x coordinate of the current position
-			:param y: y coordinate of the current position
-			:param radius: radius of the circle to be drawn
-			:param r: matrix of r values
-			:param g: matrix of g values
-			:param b: matrix of b values
-			"""
+		:param x: x coordinate of the current position
+		:param y: y coordinate of the current position
+		:param radius: radius of the circle to be drawn
+		:param r: matrix of r values
+		:param g: matrix of g values
+		:param b: matrix of b values
+		"""
 
 		
 		if (radius == 0):
@@ -37,34 +37,61 @@ class Drawer():
 			g[x][y] = 0
 			b[x][y] = 0
 
-			recurse(x+1, y, radius-1 , r , g, b)
-			recurse(x-1, y, radius-1 , r , g, b)
-			recurse(x, y+1, radius-1 , r , g, b)
-			recurse(x, y-1, radius-1 , r , g, b)
+			draw(x+1, y, radius-1 , r , g, b)
+			draw(x-1, y, radius-1 , r , g, b)
+			draw(x, y+1, radius-1 , r , g, b)
+			draw(x, y-1, radius-1 , r , g, b)
 
 	
-	def draw(self, x, y, imageArray):
+	def __init__(
+			self, 
+			image):
 		"""
-		Draws the circle around the current position
-		
-		Will be deprecated
-		"""
-		
+		Creates a drawer object 
 
-		im = Image.open('snapshot.jpg')
+		:Param image: path of the image to be edited 
+		"""
+		self._image = Image.open(image)
+		self._r = []
+		self._g = []
+		self._b = []
+
+	
+
+	def start(
+			self
+			):
+		"""
+		Seperates the stored image into its r,g,b components
+		"""	
 
 		# In this case, it's a 3-band (red, green, blue) image
 		# so we'll unpack the bands into 3 separate 2D arrays.
-		r, g, b = np.array(im).T
+		self._r, self._g, self._b = np.array(im).T
 
-		# Let's make an alpha (transparency) band based on where blue is < 100
 
-		# Random math... This isn't meant to look good...
-		# Keep in mind that these are unsigned 8-bit integers, and will overflow.
-		# You may want to convert to floats for some calculations.
-		recurse(x,y, 10, r, g, b)
+
+	def end(
+			self
+			):
+		"""
+		Compiles the seperated r,g,b into an output image
+
+		:return the path to the output image from the updated r,g,b arrays
+		"""
+
 		# Put things back together and save the result...
-		im = Image.fromarray(np.dstack([item.T for item in (r,g,b,a)]))
+		self.im = Image.fromarray(np.dstack([item.T for item in (self._r,self._g,self._b,)]))
 
-		im.save('output.png')
+		im.save('output.png')	
+
+		return "output.png"
+
+
+
+
+
+
+
+
 
