@@ -4,27 +4,44 @@ arch_dir = 'C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+458
 sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 sys.path.append('C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib')
 import Leap
-import Image, color, numpy
 
 
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
-#Private helper function, true if swiping
-def __swipehelper__(frame):
-	if len(frame.gestures()) > 3:
-		for gesture in frame.gestures():
-			if gesture.type is Leap.Gesture.TYPE_SWIPE:
-				swipe = Leap.SwipeGesture(gesture)
-				direction = swipe.direction
-				isHorizontal = abs(direction[0]) > abs(direction[1])
-				#Regarding Swipe event, fix only a certain flatness of horizontal
-				#swipes to be the correct swipe.
-				if(isHorizontal):
-					return True
-				
-	return False
+def is_horizontal(swipe):
+	"""
+	Returns true if the swipe is horizontal.
+	"""
+    swipe = Leap.SwipeGesture(swipe)
+    direction = swipe.direction
+    return abs(direction[0]) > abs(direction[1])
 
-class SampleListener(Leap.Listener):
+def swipe_helper(gestures):
+    """
+    A helper function.
+    
+    Determines whether or not the gesture was a horizontal swipe.
+    """
+    if len(gestures) > 3:
+        for gesture in gestures:
+            if gesture.type is Leap.Gesture.TYPE_SWIPE:
+                isHorizontal = is_horizontal(gesture)
+                #Regarding Swipe event, fix only a certain flatness of horizontal
+                #swipes to be the correct swipe.
+                if(isHorizontal):
+                    return True
+    
+    return False
+
+class LeapListener(Leap.Listener):
+    """
+    Basic listener for Leap Motion interface.
+    
+    Implemented motions are swipes for the left hand and drawing 
+    for the right index finger.
+    """
+
+    #Global Constants.
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
     action = False
@@ -45,28 +62,33 @@ class SampleListener(Leap.Listener):
     def on_frame(self, controller):
         # Get the most recent frame and report some basic information
         frame = controller.frame()
-		
-		for hand in frame.hands:
-			# Get fingers
+        
+        for hand in frame.hands:
+            #Draw commands for the right hand.
             if not hand.is_left:
-				for finger in hand.fingers:
-					if finger.type == 1:
-						pos = finger.stabilized_tip_position
-			if hand.is_left:
-		
-				actionPast = self.action
-				self.action = __swipehelper__(frame)
-				if not self.action:
-					if(actionPast):
-						#Swiped event call here.
-						print "Swiped"
+                print "RIGHT"
+                for finger in hand.fingers:
+                    if finger.type == 1:
+					
+						#Position is here.
+						#Used for DRAWING.
+                        pos = finger.stabilized_tip_position
+            
+			#Swipe commands for the left hand.
+            if hand.is_left:
+                print "LEFT"
+                actionPast = self.action
+                self.action = swipe_helper(frame.gestures())
+                if not self.action:
+                    if(actionPast):
+                        print "Swiped"
 		
 		
 		
 
 def main():
     # Create a sample listener and controller
-    listener = SampleListener()
+    listener = LeapListener()
     controller = Leap.Controller()
 
     # Have the sample listener receive events from the controller
