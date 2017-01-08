@@ -60,7 +60,7 @@ class DrawObj():
 			if(self._lastX == None):
 				self._lastX = x;
 				self._lastY = y;
-			self._draw.line((self._lastX,self._lastY,x,y),fill=255,width=12,)
+			self._draw.line((self._lastX,self._lastY,x,y),fill=128,width=12,)
 			self._lastX = x;
 			self._lastY = y;
 

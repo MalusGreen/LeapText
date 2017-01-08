@@ -109,14 +109,16 @@ class LeapListener(Leap.Listener):
 
                 if not self.action:
                     if(actionPast):
-                        print "Swiped"
                         if self.drawer.isDrawing:
                             self.drawer.end()
                             if not isleft:
-							    uploadImage("./output.png", False)
+                                print "Swiped Right"
+                                uploadImage("./output.png", False)
                             else:
-							    uploadImage("./output.png", True)
+                                print "Swiped Left"
+                                uploadImage("./output.png", True)
                         else:
+                            print "Swipe Start"
                             self.drawer.start()
 		
 
