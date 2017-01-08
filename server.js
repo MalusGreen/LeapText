@@ -44,20 +44,19 @@ vision.annotate(my_req).then((res) => {
 	console.log('reached here');
   // handling response
   try {
+  	var actualMessage = res.responses[0].textAnnotations[1].description;
   	if (swipe_left){
-  		var actualMessage = res.responses[0].textAnnotations[1].description;
+		api.sendMessage(actualMessage, myThreadID);
   	}else{
-  	  api.sendMessage(actualMessage, myThreadID);
   	  	client.post('statuses/update', {status: actualMessage},  function(error, tweet, response) {
   			if(error) throw error;
   			console.log(tweet);  // Tweet body. 
   			console.log(response);  // Raw response object. 
 		});
   	}
-
   }catch(err) {
   	if (swipe_left){
-  	api.sendMessage('you messed up dawg', myThreadID);
+		api.sendMessage('you messed up dawg', myThreadID);
   	}else{client.post('statuses/update', {status: actualMessage},  function(error, tweet, response) {
   			if(error) throw error;
   			console.log(tweet);  // Tweet body. 

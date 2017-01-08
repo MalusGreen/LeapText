@@ -116,9 +116,9 @@ class LeapListener(Leap.Listener):
                         self.drawer.end()
                         uploadImage("./output.png", is_left)
                         if is_left:
-                            print "Send Twitter Left"
+                            print "Send Facebook Left"
                         else:
-                            print "Send Facebook Right"
+                            print "Send Twitter Right"
                     else:
                         if is_up:
                             if not self.drawer.isDrawing:
