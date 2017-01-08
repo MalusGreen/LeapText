@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageDraw
 import numpy as np
 
 class DrawObj():
@@ -27,14 +27,8 @@ class DrawObj():
 		
 		else:
 
-			self._r[x][y] = 0
-			self._g[x][y] = 0
-			self._b[x][y] = 0
-
-			self.draw(x+1, y, radius-1)
-			self.draw(x-1, y, radius-1)
-			self.draw(x, y+1, radius-1)
-			self.draw(x, y-1, radius-1)
+			self._draw.ellipse((x-5,y-5,x+5,y+5))
+			
 
 	
 	def __init__(
@@ -46,6 +40,7 @@ class DrawObj():
 		:Param image: path of the image to be edited 
 		"""
 		self._image = Image.open(image)
+		self._draw = ImageDraw.Draw(self._image)
 		self._r = []
 		self._g = []
 		self._b = []
@@ -76,7 +71,7 @@ class DrawObj():
 		"""
 
 		# Put things back together and save the result...
-		self._image = Image.fromarray(np.dstack([item.T for item in (self._r,self._g,self._b,)]))
+		#self._image = Image.fromarray(np.dstack([item.T for item in (self._r,self._g,self._b,)]))
 		self.isDrawing = False
 
 		self._image.save('output.png')
