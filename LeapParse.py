@@ -15,13 +15,15 @@ from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 def is_horizontal(direction):
     return abs(direction[0]) > abs(direction[1])
 
+def is_notplane(direction):
+    return (abs(direction[2]) > abs(direction[0])) & (abs(direction[2]) > abs(direction[1]))
+
 def get_direction(swipe):
     """
     Returns true if the swipe is horizontal.
     """
     swipe = Leap.SwipeGesture(swipe)
-    direction = swipe.direction
-    return (direction[0], direction[1])
+    return swipe.direction
 
 def swipe_helper(gestures):
     """
@@ -33,18 +35,22 @@ def swipe_helper(gestures):
     is_left = False
     is_swipe = False
     is_up = False
+    is_forward = False
+    nonplanar = False
     if len(gestures) > 2:
         for gesture in gestures:
             is_swipe = gesture.type is Leap.Gesture.TYPE_SWIPE
             if is_swipe:
                 directions = get_direction(gesture)
                 horizontal = is_horizontal(directions)
+                nonplanar = is_notplane(directions)
                 is_left = directions[0] < 0
                 is_up = directions[1] > 0.6
+                is_forward = directions[2] < 0
                 #Regarding Swipe event, fix only a certain flatness of horizontal
                 #swipes to be the correct swipe.
-                return (horizontal, is_left, is_up, is_swipe)
-    return (horizontal, is_left, is_up, is_swipe)
+                return (horizontal, is_left, is_up, is_swipe, nonplanar, is_forward)
+    return (horizontal, is_left, is_up, is_swipe, nonplanar, is_forward)
 
 class LeapListener(Leap.Listener):
     """
@@ -92,7 +98,7 @@ class LeapListener(Leap.Listener):
                         
                         self.x = int((pos[0] + 200) * 2.5)
                         self.y = int((pos[2] + 200) * 2.5)
-						
+
                         if self.x < 50:
                             if self.y < 50:
                                 self.radius = 5
@@ -113,6 +119,8 @@ class LeapListener(Leap.Listener):
             #Swipe commands for the left hand.
             if hand.is_left:
                 flags = swipe_helper(frame.gestures())
+                is_forward = flags[5]
+                nonplanar = flags[4]
                 is_swipe = flags[3]
                 is_up = flags[2]
                 is_left = flags[1]
@@ -121,7 +129,12 @@ class LeapListener(Leap.Listener):
                 self.draw = hand.grab_strength == 1
 
                 if is_swipe:
-                    if horizontal & self.drawer.isDrawing:
+                    if nonplanar:
+                        if is_forward:
+                            if self.drawer.isDrawing:
+                                print "Swipe Forward Clear"
+                                self.drawer.clear()
+                    elif horizontal & self.drawer.isDrawing:
                         if is_left:
                             print "Send Facebook Left"
                         else:
@@ -134,7 +147,7 @@ class LeapListener(Leap.Listener):
                                 print "Start Draw"
                                 self.drawer.start()
                             else:
-								self.drawer.undo()
+                                self.drawer.undo()
 
 
 

@@ -107,7 +107,11 @@ class DrawObj():
 		self._r, self._g, self._b = np.array(self._image).T
 		self.isDrawing = True
 
-
+	def clear(
+			self
+			):
+		self._image = Image.open(self._path)
+		self._draw = ImageDraw.Draw(self._image)
 
 	def end(
 			self
