@@ -30,18 +30,20 @@ login({
 		var givenUrl = req.body;
 		//console.log(req.body);
 		// construct parameters
-const req = new vision.Request({
+const my_req = new vision.Request({
   image: new vision.Image({
-  	url: givenUrl,//'https://upload.wikimedia.org/wikipedia/commons/2/2a/AMS_Euler_sample_text.svg'}),
+  	url: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/AMS_Euler_sample_text.svg'}),
   features: [
   	new vision.Feature('TEXT_DETECTION', 10)
   ]
 })
 
 // send single request
-vision.annotate(req).then((res) => {
+vision.annotate(my_req).then((res) => {
+	console.log('reached here');
   // handling response
-  console.log(JSON.stringify(res.responses[0].textAnnotations[1].description))
+  api.sendMessage(JSON.stringify(res.responses[0].textAnnotations[1].description), myThreadID);
+  //console.log(JSON.stringify(res.responses[0].textAnnotations[1].description))
 }, (e) => {
   console.log('Error: ', e)
 })
