@@ -44,7 +44,7 @@ vision.annotate(my_req).then((res) => {
   // handling response
   try {
   		var actualMessage = res.responses[0].textAnnotations[1].description;
-  	  api.sendMessage(JSON.stringify(actualMessage.substring(1,actualMessage.length)), myThreadID);
+  	  api.sendMessage(actualMessage, myThreadID);
   }catch(err) {
   	api.sendMessage('you messed up dawg', myThreadID);
   }
