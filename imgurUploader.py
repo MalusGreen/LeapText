@@ -15,12 +15,12 @@ def uploadImage(path):
     im = pyimgur.Imgur(CLIENT_ID)
     uploaded_image = im.upload_image(PATH, title="Uploaded with PyImgur") 
     
+    print(uploaded_image.link)
     #Sends the request
     url = 'http://localhost:3000'
-    files = {'file': open(upload_image)}
-    response = requests.post(url, files=files)
+    response = requests.post(url, data = {'imgurLink':uploaded_image.link})
 
  
-#USED FOR TESTING
-path = "PLACE PATH HERE"  
+#test image on my computer 
+path = "C:\Users\Sakeeb\Documents\Development\TheRealSurface\hello.png"  
 uploadImage(path)
