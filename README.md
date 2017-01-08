@@ -16,6 +16,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 To begin the application, run `run.bat`.
 
+## Demo
+
+See a video [here](https://www.youtube.com/watch?v=1UKUhG-x6Zc).
+
 ## Usage
 
 Overview: Your left hand is used for controlling when data is being recorded, and the right hand is used as a cursor.
