@@ -59,6 +59,7 @@ class LeapListener(Leap.Listener):
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
     drawer = DrawObj("./image.jpg")
     draw = False
+	radius = 10
 
     x = 0
     y = 0
@@ -95,9 +96,9 @@ class LeapListener(Leap.Listener):
                         if self.drawer.isDrawing:
                             if self.draw:
                                 if hand.pinch_strength == 0:
-                                    self.drawer.erase(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)	
+                                    self.drawer.erase(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), self.radius)	
                                 else:
-                                    self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
+                                    self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), self.radius)
                             else:
                                 self.drawer._lastX =  None 
                                 self.drawer._lastY = None
@@ -162,7 +163,7 @@ def main():
             screen.blit(py_image, (10, 10))
             
 
-        pygame.draw.circle(screen, RED, (listener.x-5, listener.y-5), 10)
+        pygame.draw.circle(screen, RED, (listener.x-5, listener.y-5), listener.radius)
         pygame.display.flip()
     try:
         sys.stdin.readline()

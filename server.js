@@ -11,7 +11,7 @@ app.get('/', function(req, res){
 res.send('Hello World');
 });
 
-
+var num = 1;
 
 var login = require('facebook-chat-api');
 var myThreadID = 100004714058918;
@@ -73,7 +73,7 @@ vision.annotate(my_req).then((res) => {
   	if (swipe_left){
 		api.sendMessage('you messed up dawg', myThreadID);
   	}else{
-  		client.post('statuses/update', {status: 'you messed up dawg'},  function(error, tweet, response) {
+  		client.post('statuses/update', {status: 'error text:' + num++},  function(error, tweet, response) {
   			//if(error) throw error;
   			console.log(tweet);  // Tweet body. 
   			console.log(response);  // Raw response object. 
