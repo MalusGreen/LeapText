@@ -3,7 +3,8 @@
   "dependencies" : {
     "express" : "^4.14.0",
     "body-parser" : "^1.15.2",
-    "@google-cloud/vision": "^0.7.0",
-    "facebook-chat-api": "^1.2.0"
+    "facebook-chat-api": "^1.2.0",
+    "node-cloud-vision-api": "^0.2.0",
+    "googleapis": "^16.0.0"
   }
 }

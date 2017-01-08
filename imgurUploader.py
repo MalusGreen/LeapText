@@ -22,5 +22,5 @@ def uploadImage(path):
 
  
 #test image on my computer 
-path = "C:\Users\Sakeeb\Documents\Development\TheRealSurface\hello.png"  
+path = r'C:\Users\abhishru\Desktop\htv\TheRealSurface\yes.png'  
 uploadImage(path)
