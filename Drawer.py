@@ -23,24 +23,27 @@ class DrawObj():
 
 		if (radius == 0) or 1000 <= x or x < 0 or 1000 <= y or y < 0:
 
+
 			return
 		
 		else:
+			print "FIRST: %d, SECOND: %d" % (x, y)
+			self._draw.ellipse((x-radius,y-radius,x+radius,y+radius),fill=0,outline=0,)
 
-			self._draw.ellipse((x-5,y-5,x+5,y+5))
 			
 
 	
 	def __init__(
-			self, 
+			self,
 			image):
 		"""
 		Creates a drawer object 
 
-		:Param image: path of the image to be edited 
+		:Param image: path of the image to be edited
 		"""
-		self._image = Image.open(image)
-		self._draw = ImageDraw.Draw(self._image)
+		self._path = image
+		self._image = None
+		self._draw = None
 		self._r = []
 		self._g = []
 		self._b = []
@@ -52,8 +55,9 @@ class DrawObj():
 			):
 		"""
 		Seperates the stored image into its r,g,b components
-		"""	
-
+		"""
+		self._image = Image.open(self._path)
+		self._draw = ImageDraw.Draw(self._image)
 		# In this case, it's a 3-band (red, green, blue) image
 		# so we'll unpack the bands into 3 separate 2D arrays.
 		self._r, self._g, self._b = np.array(self._image).T

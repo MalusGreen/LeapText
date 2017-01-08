@@ -47,6 +47,7 @@ class LeapListener(Leap.Listener):
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
     drawer = DrawObj("./image.jpg")
     action = False
+    draw = False
 
     def on_init(self, controller):
         print "Initialized"
@@ -74,13 +75,14 @@ class LeapListener(Leap.Listener):
                         #Position is here.
                         #Used for DRAWING.
                         pos = finger.stabilized_tip_position
-                        if self.drawer.isDrawing:
-                            print "FIRST: %f, SECOND: %f" % (pos[0], pos[1])
-                            self.drawer.draw(int((pos[0] + 100) * 5), int((200 - (pos[1] - 200)) * 5), 1)
+                        if self.drawer.isDrawing & self.draw:
+                            self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
             #Swipe commands for the left hand.
             if hand.is_left:
                 actionPast = self.action
                 self.action = swipe_helper(frame.gestures())
+                self.draw = hand.grab_strength == 1
+
                 if not self.action:
                     if(actionPast):
                         print "Swiped"
