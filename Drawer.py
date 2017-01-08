@@ -30,12 +30,8 @@ class DrawObj():
 			if(self._lastX == None):
 				self._lastX = x;
 				self._lastY = y;
-<<<<<<< HEAD
 				self._current = []
 			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=radius,)
-=======
-			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=12)
->>>>>>> origin/master
 			self._lastX = x;
 			self._lastY = y;
 			self._current.append([x,y])
@@ -64,7 +60,6 @@ class DrawObj():
 			if(self._lastX == None):
 				self._lastX = x
 				self._lastY = y
-				self._current = []
 			self._draw.line((self._lastX,self._lastY,x,y),fill=(255, 255, 255),width=radius)
 			self._lastX = x
 			self._lastY = y
@@ -72,10 +67,10 @@ class DrawObj():
 
 
 
-	def undo():
+	def undo(self):
 
 		for num in range(0, len(self._current)-2):
-			self._draw.line((self._current[num][0],self._current[num][1],self._current[num+1][0],self._current[num+1][1]),fill=(0, 0, 0),width=radius)
+			self._draw.line((self._current[num][0],self._current[num][1],self._current[num+1][0],self._current[num+1][1]),fill=(255, 255, 255),width=20)
 		self._current = [];	
 
 	
