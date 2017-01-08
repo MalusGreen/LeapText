@@ -1,6 +1,6 @@
 # LeapText
 
-An application that uses motion detection to allow the user to use their hands to write text, and send it to friends on Facebook and Twitter.
+An application that uses motion detection to allow the user to use their hands to write text, and send it to friends on Facebook and Twitter. Project for HackTheValley 2017.
 
 ## Getting Started
 
@@ -32,11 +32,13 @@ Details:
 
 ## Built With
 
-* [Leap Motion SDK](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Google Cloud Vision API](https://maven.apache.org/) - Dependency Management
-* [imgurpython](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-* [facebook-chat-api](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-* [twitter-api](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Leap Motion SDK](https://developer.leapmotion.com/get-started/) - a motion sensor used to detect hand movements.
+* [Google Cloud Vision API](https://cloud.google.com/vision/docs/) - For the .jpg to text conver
+* [imgurpython](https://github.com/Imgur/imgurpython) - Used to host images temporarily when passing images to Google Cloud API.
+* [facebook-chat-api](https://github.com/Schmavery/facebook-chat-api) - Used to make Facebook posts.
+* [twitter-api](https://github.com/geduldig/TwitterAPI) - Used to make Twitter posts.
+* [pyGame](http://www.pygame.org/lofi.html) - Used to make canvas/writing interface.
+
 
 ## License
 
