@@ -74,7 +74,7 @@ vision.annotate(my_req).then((res) => {
 		api.sendMessage('you messed up dawg', myThreadID);
   	}else{
   		client.post('statuses/update', {status: 'you messed up dawg'},  function(error, tweet, response) {
-  			if(error) throw error;
+  			//if(error) throw error;
   			console.log(tweet);  // Tweet body. 
   			console.log(response);  // Raw response object. 
 		});
