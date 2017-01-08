@@ -9,7 +9,7 @@ import requests
 #print(uploaded_image.title)
 #print(uploaded_image.link)
 
-def uploadImage(path):
+def uploadImage(path, direction):
     CLIENT_ID = "d5e44e95a75c648"  #my account's key, found on https://imgur.com/account/settings/apps
     PATH = path
     im = pyimgur.Imgur(CLIENT_ID)
@@ -18,5 +18,5 @@ def uploadImage(path):
     print(uploaded_image.link)
     #Sends the request
     url = 'http://localhost:3000'
-    response = requests.post(url, data = {'imgurLink':uploaded_image.link})
+    response = requests.post(url, data = {'imgurLink':uploaded_image.link, 'direction': direction})
 
