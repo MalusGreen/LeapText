@@ -28,6 +28,7 @@ login({
 	//api.sendMessage('helloWorld', myThreadID);
 	app.post('/', function(req, res){
 		var givenUrl = req.body.imgurLink;
+		var swipe_left = req.body.direction;
 		//console.log(req.body);
 		// construct parameters
 const my_req = new vision.Request({
@@ -43,10 +44,26 @@ vision.annotate(my_req).then((res) => {
 	console.log('reached here');
   // handling response
   try {
+  	if (swipe_left){
   		var actualMessage = res.responses[0].textAnnotations[1].description;
+  	}else{
   	  api.sendMessage(actualMessage, myThreadID);
+  	  	client.post('statuses/update', {status: actualMessage},  function(error, tweet, response) {
+  			if(error) throw error;
+  			console.log(tweet);  // Tweet body. 
+  			console.log(response);  // Raw response object. 
+		});
+  	}
+
   }catch(err) {
+  	if (swipe_left){
   	api.sendMessage('you messed up dawg', myThreadID);
+  	}else{client.post('statuses/update', {status: actualMessage},  function(error, tweet, response) {
+  			if(error) throw error;
+  			console.log(tweet);  // Tweet body. 
+  			console.log(response);  // Raw response object. 
+		});
+  	}
   }
   //console.log(JSON.stringify(res.responses[0].textAnnotations[1].description))
 }, (e) => {
@@ -63,5 +80,12 @@ const vision = require('node-cloud-vision-api')
 // init with auth
 vision.init({auth: 'AIzaSyAjZcLeiAphMon-xzpVU-bBvvg3uPRPgw0'})
 
-
+var Twitter = require('twitter');
+ 
+var client = new Twitter({
+  consumer_key: 'L5y0SwyJrIhoAwuTWUNnuDt5u',
+  consumer_secret: 'sVrzr3e7C3RaW672lHk6nYUXYmSAl1HiM1A6ox3mRn4OAiKyV3',
+  access_token_key: '817995136353390592-6ud0vTD64ZdYrt1v1EB8M1RkemOQPiS',
+  access_token_secret: 'DoxOnvljQq4Op7a4A2UQMIZW4NCAa6vRubzwC9bzbcNz7'
+});
 

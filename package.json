@@ -5,6 +5,7 @@
     "body-parser" : "^1.15.2",
     "facebook-chat-api": "^1.2.0",
     "node-cloud-vision-api": "^0.2.0",
-    "googleapis": "^16.0.0"
+    "googleapis": "^16.0.0",
+    "twitter": "^1.7.0"
   }
 }
