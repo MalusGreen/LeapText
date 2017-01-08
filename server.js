@@ -43,7 +43,7 @@ vision.annotate(my_req).then((res) => {
 	console.log('reached here');
   // handling response
   try {
-  		var actualMessage = res.responses[0].textAnnotations[1].description
+  		var actualMessage = res.responses[0].textAnnotations[1].description;
   	  api.sendMessage(JSON.stringify(actualMessage.substring(1,actualMessage.length)), myThreadID);
   }catch(err) {
   	api.sendMessage('you messed up dawg', myThreadID);
