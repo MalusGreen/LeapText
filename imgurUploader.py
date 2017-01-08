@@ -1,4 +1,5 @@
 import pyimgur
+import requests
 
 #CLIENT_ID = "d5e44e95a75c648"
 #PATH = "C:\Users\Sakeeb\Documents\Development\TheRealSurface\hello.png"
@@ -12,10 +13,14 @@ def uploadImage(path):
     CLIENT_ID = "d5e44e95a75c648"  #my account's key, found on https://imgur.com/account/settings/apps
     PATH = path
     im = pyimgur.Imgur(CLIENT_ID)
-    uploaded_image = im.upload_image(PATH, title="Uploaded with PyImgur")    
-    return uploaded_image.link    
+    uploaded_image = im.upload_image(PATH, title="Uploaded with PyImgur") 
     
-    
-#test image on my computer 
-path = "C:\Users\Sakeeb\Documents\Development\TheRealSurface\hello.png"  
-uploadImage(py)
+    #Sends the request
+    url = 'http://localhost:3000'
+    files = {'file': open(upload_image)}
+    response = requests.post(url, files=files)
+
+ 
+#USED FOR TESTING
+path = "PLACE PATH HERE"  
+uploadImage(path)
