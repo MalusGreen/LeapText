@@ -77,6 +77,9 @@ class LeapListener(Leap.Listener):
                         pos = finger.stabilized_tip_position
                         if self.drawer.isDrawing & self.draw:
                             self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
+                        else:
+                            self.drawer._lastX =  None 
+                            self.drawer._lastY = None  
             #Swipe commands for the left hand.
             if hand.is_left:
                 actionPast = self.action
