@@ -37,6 +37,11 @@ login({
 	app.post('/', function(req, res){
 		var givenUrl = req.body.imgurLink;
 		var swipe_left = req.body.direction;
+		if (swipe_left === 'True'){
+			swipe_left = true;
+		}else{
+			swipe_left = false;
+		}
 		console.log(givenUrl);
 		//console.log(req.body);
 		// construct parameters
