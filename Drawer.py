@@ -1,7 +1,7 @@
-import Image
+from PIL import Image
 import numpy as np
 
-class Drawer():
+class DrawObj():
 	"""
 	Used for executing any draw functionality
 	"""
@@ -55,7 +55,7 @@ class Drawer():
 		self._r = []
 		self._g = []
 		self._b = []
-
+		self.isDrawing = False
 	
 
 	def start(
@@ -67,7 +67,8 @@ class Drawer():
 
 		# In this case, it's a 3-band (red, green, blue) image
 		# so we'll unpack the bands into 3 separate 2D arrays.
-		self._r, self._g, self._b = np.array(im).T
+		self._r, self._g, self._b = np.array(self.image).T
+		self.isDrawing = True
 
 
 
@@ -81,7 +82,8 @@ class Drawer():
 		"""
 
 		# Put things back together and save the result...
-		self.im = Image.fromarray(np.dstack([item.T for item in (self._r,self._g,self._b,)]))
+		self.image = Image.fromarray(np.dstack([item.T for item in (self._r,self._g,self._b,)]))
+		self.isDrawing = False
 
 		im.save('output.png')	
 
