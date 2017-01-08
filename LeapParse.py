@@ -26,10 +26,10 @@ def swipe_helper(gestures):
     if len(gestures) > 3:
         for gesture in gestures:
             if gesture.type is Leap.Gesture.TYPE_SWIPE:
-                is_horizontal = is_horizontal(gesture)
+                horizontal = is_horizontal(gesture)
                 #Regarding Swipe event, fix only a certain flatness of horizontal
                 #swipes to be the correct swipe.
-                if is_horizontal:
+                if horizontal:
                     return True
 
     return False
@@ -45,7 +45,7 @@ class LeapListener(Leap.Listener):
     #Global Constants.
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-    drawer = DrawObj("./image.jpeg")
+    drawer = DrawObj("./image.jpg")
     action = False
 
     def on_init(self, controller):
@@ -75,7 +75,8 @@ class LeapListener(Leap.Listener):
                         #Used for DRAWING.
                         pos = finger.stabilized_tip_position
                         if self.drawer.isDrawing:
-                            print "FIRST: %f, SECOND: %f" %(pos[0], pos[1])
+                            print "FIRST: %f, SECOND: %f" % (pos[0], pos[1])
+                            self.drawer.draw(int((pos[0] + 100) * 5), int((200 - (pos[1] - 200)) * 5), 1)
             #Swipe commands for the left hand.
             if hand.is_left:
                 actionPast = self.action

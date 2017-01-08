@@ -7,12 +7,10 @@ class DrawObj():
 	"""
 
 	def draw(
+			self,
 			x, 
 			y, 
-			radius,
-			r, 
-			g, 
-			b):
+			radius,):
 
 		"""
 		Used to draw the circle around the current position (emulates brush strokes)
@@ -21,25 +19,22 @@ class DrawObj():
 		:param x: x coordinate of the current position
 		:param y: y coordinate of the current position
 		:param radius: radius of the circle to be drawn
-		:param r: matrix of r values
-		:param g: matrix of g values
-		:param b: matrix of b values
 		"""
 
-		if (radius == 0) || (1000 < x < 0) || (1000 < y < 0):
+		if (radius == 0) or 1000 <= x or x < 0 or 1000 <= y or y < 0:
 
 			return
 		
 		else:
 
-			r[x][y] = 0
-			g[x][y] = 0
-			b[x][y] = 0
+			self._r[x][y] = 0
+			self._g[x][y] = 0
+			self._b[x][y] = 0
 
-			draw(x+1, y, radius-1 , r , g, b)
-			draw(x-1, y, radius-1 , r , g, b)
-			draw(x, y+1, radius-1 , r , g, b)
-			draw(x, y-1, radius-1 , r , g, b)
+			self.draw(x+1, y, radius-1)
+			self.draw(x-1, y, radius-1)
+			self.draw(x, y+1, radius-1)
+			self.draw(x, y-1, radius-1)
 
 	
 	def __init__(
@@ -66,7 +61,7 @@ class DrawObj():
 
 		# In this case, it's a 3-band (red, green, blue) image
 		# so we'll unpack the bands into 3 separate 2D arrays.
-		self._r, self._g, self._b = np.array(self.image).T
+		self._r, self._g, self._b = np.array(self._image).T
 		self.isDrawing = True
 
 
@@ -81,10 +76,10 @@ class DrawObj():
 		"""
 
 		# Put things back together and save the result...
-		self.image = Image.fromarray(np.dstack([item.T for item in (self._r,self._g,self._b,)]))
+		self._image = Image.fromarray(np.dstack([item.T for item in (self._r,self._g,self._b,)]))
 		self.isDrawing = False
 
-		im.save('output.png')	
+		self._image.save('output.png')
 
 		return "output.png"
 
