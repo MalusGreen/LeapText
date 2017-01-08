@@ -27,10 +27,13 @@ class DrawObj():
 			return
 		
 		else:
+			
 			if(self._lastX == None):
 				self._lastX = x;
 				self._lastY = y;
+				self._undo_stack.append(self._current)
 				self._current = []
+				
 			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=radius,)
 			self._lastX = x;
 			self._lastY = y;
@@ -71,7 +74,8 @@ class DrawObj():
 
 		for num in range(0, len(self._current)-2):
 			self._draw.line((self._current[num][0],self._current[num][1],self._current[num+1][0],self._current[num+1][1]),fill=(255, 255, 255),width=20)
-		self._current = [];	
+		
+		self._current = self._undo_stack.pop();	
 
 	
 	def __init__(
@@ -91,6 +95,7 @@ class DrawObj():
 		self._g = []
 		self._b = []
 		self._current = []
+		self._undo_stack = Stack() 
 		self.isDrawing = False
 	
 
@@ -132,8 +137,21 @@ class DrawObj():
 
 
 
-
-
+class Stack():
+	
+	def __init__(self):
+		self._container = []
+		self._limit = 10
+		
+	def push(self, elem):
+		if (len(self._container) == self._limit):
+			self._container = []
+			
+		self._container.append(elem)
+		
+	def pop(self):
+		return self._container.pop()
+		
 
 
 
