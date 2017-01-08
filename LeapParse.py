@@ -5,6 +5,7 @@ arch_dir = 'C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+458
 sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 sys.path.append('C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib')
 import Leap
+import pygame
 
 
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
@@ -23,7 +24,7 @@ def swipe_helper(gestures):
 
     Determines whether or not the gesture was a horizontal swipe.
     """
-    if len(gestures) > 3:
+    if len(gestures) > 2:
         for gesture in gestures:
             if gesture.type is Leap.Gesture.TYPE_SWIPE:
                 horizontal = is_horizontal(gesture)
@@ -49,6 +50,8 @@ class LeapListener(Leap.Listener):
     action = False
     draw = False
 
+    x = 0
+    y = 0
     def on_init(self, controller):
         print "Initialized"
 
@@ -66,15 +69,17 @@ class LeapListener(Leap.Listener):
         # Get the most recent frame and report some basic information
         frame = controller.frame()
 
+        
         for hand in frame.hands:
             #Draw commands for the right hand.
             if not hand.is_left:
                 for finger in hand.fingers:
                     if finger.type == 1:
-
                         #Position is here.
                         #Used for DRAWING.
                         pos = finger.stabilized_tip_position
+                        self.x = int((pos[0] + 200) * 2.5)
+                        self.y = int((pos[2] + 200) * 2.5)
                         if self.drawer.isDrawing & self.draw:
                             self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
                         else:
@@ -93,9 +98,7 @@ class LeapListener(Leap.Listener):
                             self.drawer.end()
                         else:
                             self.drawer.start()
-
-
-
+		
 
 
 def main():
@@ -108,6 +111,31 @@ def main():
 
     # Keep this process running until Enter is pressed
     print "Press Enter to quit..."
+
+    RED = 255, 0, 0
+    WHITE = 255, 255, 255
+    pygame.init()
+    screen = pygame.display.set_mode((1000, 1000))
+    pygame.display.set_caption("Moving Box")
+    clock = pygame.time.Clock()
+    while 1:
+        clock.tick(50)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+        screen.fill(WHITE)
+        if(listener.drawer._image != None):
+            mode = listener.drawer._image.mode
+            size = listener.drawer._image.size
+            data = listener.drawer._image.tobytes()
+
+            py_image = pygame.image.fromstring(data, size, mode)
+
+            screen.blit(py_image, (10, 10))
+            
+
+        pygame.draw.circle(screen, RED, (listener.x-5, listener.y-5), 10)
+        pygame.display.flip()
     try:
         sys.stdin.readline()
     except KeyboardInterrupt:
@@ -117,5 +145,13 @@ def main():
         controller.remove_listener(listener)
 
 
+
+
+
+
+
 if __name__ == "__main__":
     main()
+
+
+

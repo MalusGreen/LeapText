@@ -28,10 +28,10 @@ class DrawObj():
 		
 		else:
 			print "FIRST: %d, SECOND: %d" % (x, y)
-			if(self._lastX = None):
+			if(self._lastX == None):
 				self._lastX = x;
 				self._lastY = y;
-			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=15,)
+			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=12,)
 			self._lastX = x;
 			self._lastY = y;
 			
