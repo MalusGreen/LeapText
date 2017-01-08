@@ -12,13 +12,16 @@ import requests
 
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
-def is_horizontal(swipe):
+def is_horizontal(direction):
+    return abs(direction[0]) > abs(direction[1])
+
+def get_direction(swipe):
     """
     Returns true if the swipe is horizontal.
     """
     swipe = Leap.SwipeGesture(swipe)
     direction = swipe.direction
-    return abs(direction[0]) > abs(direction[1])
+    return (direction[0], direction[1])
 
 def swipe_helper(gestures):
     """
@@ -26,16 +29,22 @@ def swipe_helper(gestures):
 
     Determines whether or not the gesture was a horizontal swipe.
     """
+    horizontal = False
+    is_left = False
+    is_swipe = False
+    is_up = False
     if len(gestures) > 2:
         for gesture in gestures:
-            if gesture.type is Leap.Gesture.TYPE_SWIPE:
-                horizontal = is_horizontal(gesture)
+            is_swipe = gesture.type is Leap.Gesture.TYPE_SWIPE
+            if is_swipe:
+                directions = get_direction(gesture)
+                horizontal = is_horizontal(directions)
+                is_left = directions[0] < 0
+                is_up = directions[1] > 0.6
                 #Regarding Swipe event, fix only a certain flatness of horizontal
                 #swipes to be the correct swipe.
-                if horizontal:
-                    return True
-
-    return False
+                return (horizontal, is_left, is_up, is_swipe)
+    return (horizontal, is_left, is_up, is_swipe)
 
 class LeapListener(Leap.Listener):
     """
@@ -49,7 +58,6 @@ class LeapListener(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
     drawer = DrawObj("./image.jpg")
-    action = False
     draw = False
 
     x = 0
@@ -80,28 +88,45 @@ class LeapListener(Leap.Listener):
                         #Position is here.
                         #Used for DRAWING.
                         pos = finger.stabilized_tip_position
+                        
                         self.x = int((pos[0] + 200) * 2.5)
                         self.y = int((pos[2] + 200) * 2.5)
-                        if self.drawer.isDrawing & self.draw:
-                            self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
-                        else:
-                            self.drawer._lastX =  None 
-                            self.drawer._lastY = None  
+                        
+                        if self.drawer.isDrawing:
+                            if self.draw:
+                                if hand.pinch_strength == 0:
+                                    self.drawer.erase(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)	
+                                else:
+                                    self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
+                            else:
+                                self.drawer._lastX =  None 
+                                self.drawer._lastY = None
             #Swipe commands for the left hand.
             if hand.is_left:
-                actionPast = self.action
-                self.action = swipe_helper(frame.gestures())
+                flags = swipe_helper(frame.gestures())
+                is_swipe = flags[3]
+                is_up = flags[2]
+                is_left = flags[1]
+                horizontal = flags[0]
+
                 self.draw = hand.grab_strength == 1
 
-                if not self.action:
-                    if(actionPast):
-                        print "Swiped"
-                        if self.drawer.isDrawing:
-                            self.drawer.end()
-                            uploadImage("./output.png")
+                if is_swipe:
+                    if horizontal & self.drawer.isDrawing:
+                        if is_left:
+                            print "Send Facebook Left"
                         else:
-                            self.drawer.start()
-		
+                            print "Send Twitter Right"
+                        self.drawer.end()
+                        uploadImage("./output.png", is_left)
+                    else:
+                        if is_up:
+                            if not self.drawer.isDrawing:
+                                print "Start Draw"
+                                self.drawer.start()
+
+
+
 
 
 def main():
