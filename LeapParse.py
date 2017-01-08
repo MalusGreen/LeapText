@@ -59,7 +59,7 @@ class LeapListener(Leap.Listener):
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
     drawer = DrawObj("./image.jpg")
     draw = False
-	radius = 10
+    radius = 10
 
     x = 0
     y = 0
@@ -92,7 +92,14 @@ class LeapListener(Leap.Listener):
                         
                         self.x = int((pos[0] + 200) * 2.5)
                         self.y = int((pos[2] + 200) * 2.5)
-                        
+						
+                        if self.x < 50:
+                            if self.y < 50:
+                                self.radius = 5
+                            elif self.y < 100:
+                                self.radius = 10
+                            elif self.y < 150:
+                                self.radius = 15
                         if self.drawer.isDrawing:
                             if self.draw:
                                 if hand.pinch_strength == 0:
@@ -102,6 +109,7 @@ class LeapListener(Leap.Listener):
                             else:
                                 self.drawer._lastX =  None 
                                 self.drawer._lastY = None
+                                
             #Swipe commands for the left hand.
             if hand.is_left:
                 flags = swipe_helper(frame.gestures())
@@ -125,7 +133,8 @@ class LeapListener(Leap.Listener):
                             if not self.drawer.isDrawing:
                                 print "Start Draw"
                                 self.drawer.start()
-
+                            else:
+								self.drawer.undo()
 
 
 
@@ -162,8 +171,11 @@ def main():
 
             screen.blit(py_image, (10, 10))
             
-
+        
         pygame.draw.circle(screen, RED, (listener.x-5, listener.y-5), listener.radius)
+        pygame.draw.rect(screen, RED, (0, 0, 50, 50), 5)
+        pygame.draw.rect(screen, RED, (0, 50, 50, 50), 5)
+        pygame.draw.rect(screen, RED, (0, 100, 50, 50), 5)
         pygame.display.flip()
     try:
         sys.stdin.readline()

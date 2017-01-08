@@ -30,9 +30,11 @@ class DrawObj():
 			if(self._lastX == None):
 				self._lastX = x;
 				self._lastY = y;
+				self._current = []
 			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=radius,)
 			self._lastX = x;
 			self._lastY = y;
+			self._current.append([x,y])
 	
 	def erase(
 			self,
@@ -56,11 +58,20 @@ class DrawObj():
 		
 		else:
 			if(self._lastX == None):
-				self._lastX = x;
-				self._lastY = y;
+				self._lastX = x
+				self._lastY = y
+				
 			self._draw.line((self._lastX,self._lastY,x,y),fill=(255, 255, 255),width=radius,)
-			self._lastX = x;
-			self._lastY = y;
+			self._lastX = x
+			self._lastY = y
+			
+
+
+	def undo(self):
+		
+		for num in range(0, len(self._current)-2):
+			self._draw.line((self._current[num][0],self._current[num][1],self._current[num+1][0],self._current[num+1][1]),fill=(255, 255, 255),width=16,)
+		self._current = [];	
 
 	
 	def __init__(
@@ -79,6 +90,7 @@ class DrawObj():
 		self._r = []
 		self._g = []
 		self._b = []
+		self._current = []
 		self.isDrawing = False
 	
 
