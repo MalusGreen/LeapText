@@ -1,4 +1,4 @@
-# LeapText
+## ![alt tag](https://s28.postimg.org/mjrge9wf1/Logomakr_4u33_PB.png/)
 
 An application that uses motion detection to allow the user to use their hands to write text, and send it to friends on Facebook and Twitter. Project for HackTheValley 2017.
 
