@@ -150,9 +150,11 @@ class Stack():
 		self._container.append(elem)
 		
 	def pop(self):
-		return self._container.pop()
+		if (not self._is_empty()):
+			return self._container.pop()
 		
-
+	def is_empty(self):
+		return len(self._container) == 0
 
 
 
