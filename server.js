@@ -55,9 +55,11 @@ vision.annotate(my_req).then((res) => {
 		});
   	}
   }catch(err) {
+  	console.log(swipe_left);
   	if (swipe_left){
 		api.sendMessage('you messed up dawg', myThreadID);
-  	}else{client.post('statuses/update', {status: actualMessage},  function(error, tweet, response) {
+  	}else{
+  		client.post('statuses/update', {status: actualMessage},  function(error, tweet, response) {
   			if(error) throw error;
   			console.log(tweet);  // Tweet body. 
   			console.log(response);  // Raw response object. 
