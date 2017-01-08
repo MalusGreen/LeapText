@@ -5,7 +5,8 @@ arch_dir = 'C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+458
 sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 sys.path.append('C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib')
 import Leap
-
+import pyimgur
+import requests
 
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
@@ -45,7 +46,7 @@ class LeapListener(Leap.Listener):
     #Global Constants.
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-    drawer = DrawObj("./image.jpg")
+    drawer = DrawObj("./image.png")
     action = False
     draw = False
 
@@ -115,7 +116,10 @@ def main():
     finally:
         # Remove the sample listener when done
         controller.remove_listener(listener)
-
+    
+    # Send image to server
+    uploadImage("./image.png")
+    
 
 if __name__ == "__main__":
     main()
