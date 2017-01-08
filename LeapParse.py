@@ -98,9 +98,9 @@ class LeapListener(Leap.Listener):
                                     self.drawer.erase(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)	
                                 else:
                                     self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
-                        else:
-                            self.drawer._lastX =  None 
-                            self.drawer._lastY = None 
+                            else:
+                                self.drawer._lastX =  None 
+                                self.drawer._lastY = None
             #Swipe commands for the left hand.
             if hand.is_left:
                 flags = swipe_helper(frame.gestures())
@@ -113,12 +113,12 @@ class LeapListener(Leap.Listener):
 
                 if is_swipe:
                     if horizontal & self.drawer.isDrawing:
-                        self.drawer.end()
-                        uploadImage("./output.png", is_left)
                         if is_left:
                             print "Send Facebook Left"
                         else:
                             print "Send Twitter Right"
+                        self.drawer.end()
+                        uploadImage("./output.png", is_left)
                     else:
                         if is_up:
                             if not self.drawer.isDrawing:
