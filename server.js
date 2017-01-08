@@ -6,13 +6,11 @@ var http = require('http');
 //Middleware
 app.listen(3000);
 
-//var Vision = require('@google-cloud/vision');
-// Instantiate a vision client
-//var vision = Vision();
 
 app.get('/', function(req, res){
 res.send('Hello World');
 });
+
 
 
 var login = require('facebook-chat-api');
@@ -29,22 +27,12 @@ login({
 	function processMessage(err, api){
 	//api.sendMessage('helloWorld', myThreadID);
 	app.post('/', function(req, res){
-		console.log(req.body);
-		res.send('success');
-	});
-});
-
-var google = require('googleapis');
-
-const vision = require('node-cloud-vision-api')
-
-// init with auth
-vision.init({auth: 'AIzaSyAjZcLeiAphMon-xzpVU-bBvvg3uPRPgw0'})
-
-// construct parameters
+		var givenUrl = req.body;
+		//console.log(req.body);
+		// construct parameters
 const req = new vision.Request({
   image: new vision.Image({
-  	url: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/AMS_Euler_sample_text.svg'}),
+  	url: givenUrl,//'https://upload.wikimedia.org/wikipedia/commons/2/2a/AMS_Euler_sample_text.svg'}),
   features: [
   	new vision.Feature('TEXT_DETECTION', 10)
   ]
@@ -57,4 +45,16 @@ vision.annotate(req).then((res) => {
 }, (e) => {
   console.log('Error: ', e)
 })
+		res.send('success');
+	});
+});
+
+var google = require('googleapis');
+
+const vision = require('node-cloud-vision-api')
+
+// init with auth
+vision.init({auth: 'AIzaSyAjZcLeiAphMon-xzpVU-bBvvg3uPRPgw0'})
+
+
 
