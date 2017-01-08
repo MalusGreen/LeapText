@@ -1,17 +1,14 @@
 from Drawer import DrawObj
+from imgurUploader import uploadImage
 import os, sys, inspect, thread, time
 src_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
 arch_dir = 'C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib/x64' if sys.maxsize > 2**32 else 'C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib/x86'
 sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 sys.path.append('C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib')
 import Leap
-<<<<<<< HEAD
 import pygame
-
-=======
 import pyimgur
 import requests
->>>>>>> origin/master
 
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
@@ -51,7 +48,7 @@ class LeapListener(Leap.Listener):
     #Global Constants.
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-    drawer = DrawObj("./image.png")
+    drawer = DrawObj("./image.jpg")
     action = False
     draw = False
 
@@ -101,6 +98,7 @@ class LeapListener(Leap.Listener):
                         print "Swiped"
                         if self.drawer.isDrawing:
                             self.drawer.end()
+                            uploadImage("./output.png")
                         else:
                             self.drawer.start()
 		
@@ -150,7 +148,6 @@ def main():
         controller.remove_listener(listener)
     
     # Send image to server
-    uploadImage("./image.png")
     
 
 

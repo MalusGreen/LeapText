@@ -20,7 +20,3 @@ def uploadImage(path):
     url = 'http://localhost:3000'
     response = requests.post(url, data = {'imgurLink':uploaded_image.link})
 
- 
-#test image on my computer 
-#path = r'C:\Users\Sakeeb\Documents\Development\TheRealSurface\yes.png'  
-#uploadImage(path)
