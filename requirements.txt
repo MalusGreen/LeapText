@@ -1,0 +1,7 @@
+docopt==0.6.2
+imgurpython==1.1.7
+pipreqs==0.4.6
+pil==1.1.6
+pyimgur==0.6.0
+requests==2.12.4
+yarg==0.1.9
