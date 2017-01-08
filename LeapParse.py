@@ -12,13 +12,16 @@ import requests
 
 from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
-def is_horizontal(swipe):
+def is_horizontal(direction):
+	return abs(direction[0]) > abs(direction[1])
+
+def get_direction(swipe):
     """
     Returns true if the swipe is horizontal.
     """
     swipe = Leap.SwipeGesture(swipe)
     direction = swipe.direction
-    return abs(direction[0]) > abs(direction[1])
+    return (direction[0], direction[1])
 
 def swipe_helper(gestures):
     """
@@ -26,16 +29,18 @@ def swipe_helper(gestures):
 
     Determines whether or not the gesture was a horizontal swipe.
     """
+    horizontal = False
+    is_left = False
     if len(gestures) > 2:
         for gesture in gestures:
             if gesture.type is Leap.Gesture.TYPE_SWIPE:
-                horizontal = is_horizontal(gesture)
+                directions = get_direction(gesture)
+                horizontal = is_horizontal(directions)
+                is_left = directions[0] < 0
+				
                 #Regarding Swipe event, fix only a certain flatness of horizontal
                 #swipes to be the correct swipe.
-                if horizontal:
-                    return True
-
-    return False
+    return (horizontal, is_left)
 
 class LeapListener(Leap.Listener):
     """
@@ -80,17 +85,26 @@ class LeapListener(Leap.Listener):
                         #Position is here.
                         #Used for DRAWING.
                         pos = finger.stabilized_tip_position
+                        
                         self.x = int((pos[0] + 200) * 2.5)
                         self.y = int((pos[2] + 200) * 2.5)
-                        if self.drawer.isDrawing & self.draw:
-                            self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
+                        
+                        if self.drawer.isDrawing:
+                            if self.draw:
+                                if hand.pinch_strength == 0:
+                                    self.drawer.erase(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)	
+                                else:
+                                    self.drawer.draw(int((pos[0] + 200) * 2.5), int((pos[2] + 200) * 2.5), 10)
                         else:
                             self.drawer._lastX =  None 
-                            self.drawer._lastY = None  
+                            self.drawer._lastY = None 
             #Swipe commands for the left hand.
             if hand.is_left:
                 actionPast = self.action
-                self.action = swipe_helper(frame.gestures())
+                flags = swipe_helper(frame.gestures())
+				
+                self.action = flags[0]
+                isleft = flags[1]
                 self.draw = hand.grab_strength == 1
 
                 if not self.action:
@@ -98,7 +112,10 @@ class LeapListener(Leap.Listener):
                         print "Swiped"
                         if self.drawer.isDrawing:
                             self.drawer.end()
-                            uploadImage("./output.png")
+                            if not isleft:
+							    uploadImage("./output.png", False)
+                            else:
+							    uploadImage("./output.png", True)
                         else:
                             self.drawer.start()
 		

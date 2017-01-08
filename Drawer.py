@@ -34,7 +34,35 @@ class DrawObj():
 			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=12,)
 			self._lastX = x;
 			self._lastY = y;
-			
+	
+	def erase(
+			self,
+			x, 
+			y, 
+			radius,):
+
+		"""
+		Used to draw the circle around the current position (emulates brush strokes)
+		Draws the circle through the use of recursion
+
+		:param x: x coordinate of the current position
+		:param y: y coordinate of the current position
+		:param radius: radius of the circle to be drawn
+		"""
+
+		if (radius == 0) or 1000 <= x or x < 0 or 1000 <= y or y < 0:
+
+
+			return
+		
+		else:
+			print "FIRST: %d, SECOND: %d" % (x, y)
+			if(self._lastX == None):
+				self._lastX = x;
+				self._lastY = y;
+			self._draw.line((self._lastX,self._lastY,x,y),fill=255,width=12,)
+			self._lastX = x;
+			self._lastY = y;
 
 	
 	def __init__(
