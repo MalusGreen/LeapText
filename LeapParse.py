@@ -45,7 +45,7 @@ class LeapListener(Leap.Listener):
     #Global Constants.
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-    drawer = DrawObj("./image.jpeg")
+    drawer = DrawObj("./image.jpg")
     action = False
 
     def on_init(self, controller):
