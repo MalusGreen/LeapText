@@ -31,7 +31,7 @@ class DrawObj():
 			if(self._lastX == None):
 				self._lastX = x;
 				self._lastY = y;
-				self._undo_stack.append(self._current)
+				self._undo_stack.push(self._current)
 				self._current = []
 				
 			self._draw.line((self._lastX,self._lastY,x,y),fill=0,width=radius,)
@@ -72,10 +72,12 @@ class DrawObj():
 
 	def undo(self):
 
+
 		for num in range(0, len(self._current)-2):
 			self._draw.line((self._current[num][0],self._current[num][1],self._current[num+1][0],self._current[num+1][1]),fill=(255, 255, 255),width=20)
 		
-		self._current = self._undo_stack.pop();	
+		if not self._undo_stack.is_empty():
+			self._current = self._undo_stack.pop();
 
 	
 	def __init__(
@@ -150,7 +152,7 @@ class Stack():
 		self._container.append(elem)
 		
 	def pop(self):
-		if (not self._is_empty()):
+		if (not self.is_empty()):
 			return self._container.pop()
 		
 	def is_empty(self):

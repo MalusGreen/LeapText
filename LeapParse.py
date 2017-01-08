@@ -2,9 +2,9 @@ from Drawer import DrawObj
 from imgurUploader import uploadImage
 import os, sys, inspect, thread, time
 src_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
-arch_dir = 'C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib/x64' if sys.maxsize > 2**32 else 'C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib/x86'
+arch_dir = '../LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib/x64' if sys.maxsize > 2**32 else '../LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib/x86'
 sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
-sys.path.append('C:/Users/Kevin Zheng/Documents/HackValley/LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib')
+sys.path.append('../LeapDeveloperKit_3.2.0+45899_win/LeapSDK/lib')
 import Leap
 import pygame
 import pyimgur
@@ -65,6 +65,13 @@ class LeapListener(Leap.Listener):
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
     drawer = DrawObj("./image.jpg")
     draw = False
+    past_up = False
+    is_forward = False
+    nonplanar = False
+    is_swipe = False
+    is_up = False
+    is_left = False
+    horizontal = False
     radius = 10
 
     x = 0
@@ -119,35 +126,37 @@ class LeapListener(Leap.Listener):
             #Swipe commands for the left hand.
             if hand.is_left:
                 flags = swipe_helper(frame.gestures())
-                is_forward = flags[5]
-                nonplanar = flags[4]
-                is_swipe = flags[3]
-                is_up = flags[2]
-                is_left = flags[1]
-                horizontal = flags[0]
+                self.is_forward = flags[5]
+                self.nonplanar = flags[4]
+                self.is_swipe = flags[3]
+                self.past_up = self.is_up
+                self.is_up = flags[2]
+                self.is_left = flags[1]
+                self.horizontal = flags[0]
 
                 self.draw = hand.grab_strength == 1
-
-                if is_swipe:
-                    if nonplanar:
-                        if is_forward:
+                
+                if self.is_swipe:
+                    if self.nonplanar:
+                        if self.is_forward:
                             if self.drawer.isDrawing:
                                 print "Swipe Forward Clear"
                                 self.drawer.clear()
-                    elif horizontal & self.drawer.isDrawing:
-                        if is_left:
+                    elif self.horizontal & self.drawer.isDrawing:
+                        if self.is_left:
                             print "Send Facebook Left"
                         else:
                             print "Send Twitter Right"
                         self.drawer.end()
-                        uploadImage("./output.png", is_left)
+                        uploadImage("./output.png", self.is_left)
                     else:
-                        if is_up:
+                        if self.is_up:
                             if not self.drawer.isDrawing:
                                 print "Start Draw"
                                 self.drawer.start()
                             else:
-                                self.drawer.undo()
+                                if not self.past_up:
+                                    self.drawer.undo()
 
 
 
