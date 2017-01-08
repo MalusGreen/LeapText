@@ -26,8 +26,7 @@ class DrawObj():
 		:param b: matrix of b values
 		"""
 
-		
-		if (radius == 0):
+		if (radius == 0) || (1000 < x < 0) || (1000 < y < 0):
 
 			return
 		
